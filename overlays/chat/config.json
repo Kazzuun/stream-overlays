@@ -1,0 +1,59 @@
+{
+    "$type": "MixItUp.Base.Model.Overlay.Widgets.OverlayWidgetV3Model, MixItUp.Base",
+    "Name": "Chat",
+    "Item": {
+        "$type": "MixItUp.Base.Model.Overlay.OverlayChatV3Model, MixItUp.Base",
+        "BackgroundColor": "Wheat",
+        "BorderColor": "Black",
+        "MessageDelayTime": 0,
+        "MessageRemovalTime": 0,
+        "AddMessagesToTop": false,
+        "HideExclamationMessages": true,
+        "DisplayAlejoPronouns": false,
+        "IgnoreSpecialtyExcludedUsers": false,
+        "UsernamesToIgnore": [],
+        "ShowPlatformBadge": true,
+        "ShowRoleBadge": true,
+        "ShowSubscriberBadge": true,
+        "ShowSpecialtyBadge": true,
+        "ApplicableStreamingPlatforms": [
+            2,
+            3,
+            4
+        ],
+        "MessageAddedAnimation": {
+            "$type": "MixItUp.Base.Model.Overlay.OverlayAnimationV3Model, MixItUp.Base",
+            "StartTime": 0.0,
+            "AnimateCSSAnimation": 0,
+            "WoahCSSAnimation": 0
+        },
+        "MessageRemovedAnimation": {
+            "$type": "MixItUp.Base.Model.Overlay.OverlayAnimationV3Model, MixItUp.Base",
+            "StartTime": 0.0,
+            "AnimateCSSAnimation": 0,
+            "WoahCSSAnimation": 0
+        },
+        "Text": null,
+        "FontSize": 24,
+        "FontName": "Arial",
+        "FontColor": "Black",
+        "Bold": false,
+        "Italics": false,
+        "Underline": false,
+        "TextAlignment": 0,
+        "ShadowColor": null,
+        "Version": 0,
+        "Type": 12,
+        "DisplayOption": 0,
+        "Width": 400,
+        "Height": 600,
+        "PositionType": 0,
+        "XPosition": 50,
+        "YPosition": 50,
+        "XMaximum": 0,
+        "YMaximum": 0,
+        "Layer": 0
+    },
+    "IsEnabled": false,
+    "RefreshTime": 0
+}
