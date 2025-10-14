@@ -61,7 +61,7 @@ if (!jsArtifact) {
 }
 
 // 3. Read the contents of the files
-const [packageContent, configContent, htmlContent, cssContent, jsContent] =
+let [packageContent, configContent, htmlContent, cssContent, jsContent] =
     await Promise.all([
         Bun.file(packagePath).json(),
         Bun.file(configPath).json(),
@@ -69,6 +69,9 @@ const [packageContent, configContent, htmlContent, cssContent, jsContent] =
         Bun.file(cssPath).text(),
         jsArtifact.text(),
     ]);
+
+// Remove all exports
+jsContent = jsContent.replace(/export\s\{[\s\S]*\};/g, "");
 
 // 4. Save the overlay
 const version = `v${packageContent.version}`;
