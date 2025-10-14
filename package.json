@@ -1,25 +1,26 @@
 {
   "name": "overlays",
   "devDependencies": {
-    "@eslint/css": "^0.11.0",
-    "@eslint/js": "^9.34.0",
+    "@eslint/css": "^0.11.1",
+    "@eslint/js": "^9.37.0",
     "@eslint/json": "^0.13.2",
     "@types/bun": "latest",
-    "@typescript-eslint/eslint-plugin": "^8.41.0",
-    "@typescript-eslint/parser": "^8.41.0",
-    "eslint": "^9.34.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "globals": "^16.3.0",
+    "globals": "^16.4.0",
     "prettier": "^3.6.2",
-    "typescript-eslint": "^8.41.0"
+    "typescript-eslint": "^8.46.1"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.2"
   },
   "private": true,
   "scripts": {
-    "build:raid-clip": "bun build.ts raid-clip"
+    "build:raid-clip": "bun build.ts raid-clip",
+    "build:chat": "bun build.ts chat"
   },
   "workspaces": [
     "overlays/*"
