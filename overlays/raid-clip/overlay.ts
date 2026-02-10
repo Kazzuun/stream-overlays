@@ -18,7 +18,7 @@ interface Clip {
     video_id: string;
     game_id: string;
     language: string;
-    tutle: string;
+    title: string;
     view_count: number;
     created_at: string;
     thumbnail_url: string;
@@ -68,8 +68,19 @@ async function processNext() {
     const contentDiv = document.getElementById("contentdiv")!;
     contentDiv.appendChild(video);
 
+    const info = document.createElement("div");
+    info.className = "info-panel";
+    const created = new Date(clip.created_at);
+    info.innerHTML = `
+        <span class="broadcaster">${clip.broadcaster_name}</span>
+        <span class="title">${clip.title}</span>
+        <span class="date">${created.toLocaleDateString()}</span>
+    `;
+    contentDiv.appendChild(info);
+
     video.addEventListener("ended", () => {
         contentDiv.removeChild(video);
+        contentDiv.removeChild(info);
         isProcessing = false;
         processNext();
     });

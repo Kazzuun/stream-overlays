@@ -31,3 +31,40 @@
     border-radius: 4px;
     pointer-events: none;
 }
+
+.info-panel {
+    position: absolute;
+    left: 3vw;
+    bottom: 3vh;
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    padding: 1.2vh 1.2vw;
+    border-radius: 1vh;
+    line-height: 1.2;
+    width: 50vw;
+    max-width: 40%;
+    pointer-events: none;
+    backdrop-filter: blur(0.4vh);
+    box-shadow: 0 0.6vh 1.2vh rgba(0,0,0,0.4);
+}
+
+.info-panel .broadcaster {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.6vh;
+    font-size: 5vh;
+    overflow-wrap: anywhere;
+}
+
+.info-panel .title {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.6vh;
+    font-size: 4vh;
+    overflow-wrap: anywhere;
+}
+
+.info-panel .date {
+    font-size: 3vh;
+    opacity: 0.9;
+}
