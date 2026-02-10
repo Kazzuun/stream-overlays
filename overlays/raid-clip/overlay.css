@@ -38,6 +38,15 @@
     bottom: 3vh;
     background: rgba(0, 0, 0, 0.3);
     color: #fff;
+    text-shadow:
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000;
     padding: 1.2vh 1.2vw;
     border-radius: 1vh;
     line-height: 1.2;
