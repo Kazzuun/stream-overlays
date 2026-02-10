@@ -119,7 +119,8 @@ async function getClip(channel: string): Promise<Clip | null> {
     const now = new Date();
     const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const startDate = oneMonthAgo.toISOString();
-    const apiUrl = `${apiServer}/getuserclips.php?channel=${channel}&end_date=${startDate}`;
+    const endDate = now.toISOString();
+    const apiUrl = `${apiServer}/getuserclips.php?channel=${channel}&start_date=${startDate}&end_date=${endDate}`;
 
     try {
         const response = await fetch(apiUrl);
@@ -133,7 +134,9 @@ async function getClip(channel: string): Promise<Clip | null> {
             if (fallbackClipData.data.length === 0) {
                 return null;
             }
-            return fallbackClipData.data[0]!;
+            fallbackClipData.data.sort((a, b) => b.view_count - a.view_count);
+            const topClips = fallbackClipData.data.slice(0, 5);
+            return topClips[Math.floor(Math.random() * topClips.length)]!;
         }
 
         // check if there are any clips from the last stream (within past day), and pick the one with the most views
