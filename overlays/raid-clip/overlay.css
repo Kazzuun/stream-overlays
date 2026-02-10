@@ -45,7 +45,7 @@
     max-width: 40%;
     pointer-events: none;
     backdrop-filter: blur(0.4vh);
-    box-shadow: 0 0.6vh 1.2vh rgba(0,0,0,0.4);
+    box-shadow: 0 0.6vh 1.2vh rgba(0, 0, 0, 0.4);
 }
 
 .info-panel .broadcaster {
@@ -57,8 +57,8 @@
 }
 
 .info-panel .title {
-    display: block;
     font-weight: 500;
+    display: block;
     margin-bottom: 0.6vh;
     font-size: 4vh;
     overflow-wrap: anywhere;

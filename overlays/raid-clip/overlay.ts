@@ -16,7 +16,7 @@ interface Clip {
     creator_id: string;
     creator_name: string;
     video_id: string;
-    game_id: string;
+    game_id: string | null;
     language: string;
     title: string;
     view_count: number;
@@ -26,6 +26,18 @@ interface Clip {
     vod_offset: number | null;
     is_featured: boolean;
     clip_url: string;
+}
+
+interface GameData {
+    data: Game[];
+}
+
+interface Game {
+    id: string;
+    name: string;
+    box_art_url: string;
+    igdb_id: string;
+    box_art_url_scaled: string;
 }
 
 const servers = ["https://twitchapi.teklynk.com", "https://twitchapi.teklynk.dev", "https://twitchapi2.teklynk.dev"];
@@ -70,12 +82,24 @@ async function processNext() {
 
     const info = document.createElement("div");
     info.className = "info-panel";
+
+    const broadcasterSpan = document.createElement("span");
+    broadcasterSpan.className = "broadcaster";
+    broadcasterSpan.textContent = clip.broadcaster_name;
+    info.appendChild(broadcasterSpan);
+
+    const titleSpan = document.createElement("span");
+    titleSpan.className = "title";
+    const gameName = await getGameName(clip.game_id);
+    titleSpan.textContent = gameName ? `${gameName} - ${clip.title}` : clip.title;
+    info.appendChild(titleSpan);
+
+    const dateSpan = document.createElement("span");
+    dateSpan.className = "date";
     const created = new Date(clip.created_at);
-    info.innerHTML = `
-        <span class="broadcaster">${clip.broadcaster_name}</span>
-        <span class="title">${clip.title}</span>
-        <span class="date">${created.toLocaleDateString()}</span>
-    `;
+    dateSpan.textContent = created.toLocaleDateString();
+    info.appendChild(dateSpan);
+
     contentDiv.appendChild(info);
 
     video.addEventListener("ended", () => {
@@ -140,6 +164,22 @@ async function getClip(channel: string): Promise<Clip | null> {
         }
     } catch (error) {
         console.error("Error fetching clip data:", error);
+        return null;
+    }
+}
+
+async function getGameName(gameId: string | null): Promise<string | null> {
+    if (!gameId) return null;
+
+    const apiServer = servers[Math.floor(Math.random() * servers.length)];
+    const apiUrl = `${apiServer}/getgame.php?id=${gameId}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const gameData: GameData = await response.json();
+        return gameData.data[0]!.name;
+    } catch (error) {
+        console.error("Error fetching game data:", error);
         return null;
     }
 }
