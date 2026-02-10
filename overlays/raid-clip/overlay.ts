@@ -95,7 +95,7 @@ async function getClip(channel: string): Promise<Clip | null> {
     const now = new Date();
     const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const startDate = oneMonthAgo.toISOString();
-    const apiUrl = `${apiServer}/getuserclips.php?channel=${channel}&random=true&end_date=${startDate}`;
+    const apiUrl = `${apiServer}/getuserclips.php?channel=${channel}&end_date=${startDate}`;
 
     try {
         const response = await fetch(apiUrl);
