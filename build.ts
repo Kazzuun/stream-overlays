@@ -73,6 +73,9 @@ let [packageContent, configContent, htmlContent, cssContent, jsContent] =
 // Remove all exports
 jsContent = jsContent.replace(/export\s\{[\s\S]*\};/g, "");
 
+// Format Mixitup placeholder values correctly
+jsContent = jsContent.replace(/\{\s*([A-Za-z0-9_]+)\s*\}/g, "{$1}");
+
 // 4. Save the overlay
 const version = `v${packageContent.version}`;
 configContent.Name = `${configContent.Name} ${version}`;
