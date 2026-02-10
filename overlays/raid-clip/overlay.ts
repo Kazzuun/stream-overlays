@@ -3,32 +3,63 @@ interface Data {
     volume: number;
 }
 
-const servers = [
-    "https://twitchapi.teklynk.com",
-    "https://twitchapi.teklynk.dev",
-    "https://twitchapi2.teklynk.dev",
-];
+interface ClipData {
+    data: Clip[];
+}
+
+interface Clip {
+    item: number;
+    url: string;
+    embed_url: string;
+    broadcaster_id: string;
+    broadcaster_name: string;
+    creator_id: string;
+    creator_name: string;
+    video_id: string;
+    game_id: string;
+    language: string;
+    tutle: string;
+    view_count: number;
+    created_at: string;
+    thumbnail_url: string;
+    duration: number; // seconds
+    vod_offset: number | null;
+    is_featured: boolean;
+    clip_url: string;
+}
+
+const servers = ["https://twitchapi.teklynk.com", "https://twitchapi.teklynk.dev", "https://twitchapi2.teklynk.dev"];
+
+const raidQueue: Data[] = [];
+let isProcessing = false;
 
 export async function Raid(data: Data) {
-    const apiServer = servers[Math.floor(Math.random() * servers.length)];
-    const channel = data.channel;
+    raidQueue.push(data);
+    if (!isProcessing) {
+        processNext();
+    }
+}
 
-    // TODO: add end date to avoid too old clips
-    const apiUrl = `${apiServer}/getuserclips.php?channel=${channel}&random=true`;
-    const response = await fetch(apiUrl);
-    const clipData = await response.json();
+async function processNext() {
+    if (isProcessing) return;
 
-    // TODO: handle no clips found
-    if (clipData.data.length === 0) {
+    const next = raidQueue.shift();
+    if (!next) return;
+
+    isProcessing = true;
+
+    const clip = await getClip(next.channel);
+    if (!clip) {
+        isProcessing = false;
+        processNext();
         return;
     }
-    const clip = clipData.data[0];
 
     const video = document.createElement("video");
     video.id = "videoplayer";
     video.src = clip.clip_url;
     video.poster = clip.thumbnail_url;
-    video.volume = data.volume;
+    video.volume = next.volume;
     video.autoplay = true;
     video.muted = false;
     video.controls = false;
@@ -39,7 +70,65 @@ export async function Raid(data: Data) {
 
     video.addEventListener("ended", () => {
         contentDiv.removeChild(video);
+        isProcessing = false;
+        processNext();
     });
 
     video.play();
+}
+
+async function getClip(channel: string): Promise<Clip | null> {
+    const apiServer = servers[Math.floor(Math.random() * servers.length)];
+
+    // get clips from the past month to avoid old clips
+    const now = new Date();
+    const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const startDate = oneMonthAgo.toISOString();
+    const apiUrl = `${apiServer}/getuserclips.php?channel=${channel}&random=true&end_date=${startDate}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const clipData: ClipData = await response.json();
+
+        if (clipData.data.length === 0) {
+            // if no clips found, try again from all available clips
+            const fallbackApiUrl = `${apiServer}/getuserclips.php?channel=${channel}`;
+            const fallbackResponse = await fetch(fallbackApiUrl);
+            const fallbackClipData: ClipData = await fallbackResponse.json();
+            if (fallbackClipData.data.length === 0) {
+                return null;
+            }
+            return fallbackClipData.data[0]!;
+        }
+
+        // check if there are any clips from the last stream (within past day), and pick the one with the most views
+        // otherwise first try a week ago and then just pick the most viewed clip from the last month
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const recentClips = clipData.data.filter((clip) => {
+            const createdAt = new Date(clip.created_at);
+            return createdAt > oneDayAgo;
+        });
+
+        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const lessRecentClips = clipData.data.filter((clip) => {
+            const createdAt = new Date(clip.created_at);
+            return createdAt > oneWeekAgo;
+        });
+
+        if (recentClips.length > 0) {
+            recentClips.sort((a, b) => b.view_count - a.view_count);
+            return recentClips[0]!;
+        } else if (lessRecentClips.length > 0) {
+            recentClips.sort((a, b) => b.view_count - a.view_count);
+            return lessRecentClips[0]!;
+        } else {
+            clipData.data.sort((a, b) => b.view_count - a.view_count);
+            // choose one of the top 5 randomly
+            const topClips = clipData.data.slice(0, 5);
+            return topClips[Math.floor(Math.random() * topClips.length)]!;
+        }
+    } catch (error) {
+        console.error("Error fetching clip data:", error);
+        return null;
+    }
 }
